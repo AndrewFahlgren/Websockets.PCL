@@ -15,6 +15,7 @@ namespace Websockets.Ios
         public event Action<IWebSocketConnection> OnDispose = delegate { };
         public event Action<string> OnError = delegate { };
         public event Action<string> OnMessage = delegate { };
+        public event Action<string> OnPong = delegate { };
         public event Action<string> OnLog = delegate { };
 
         static WebsocketConnection()
@@ -67,6 +68,7 @@ namespace Websockets.Ios
                     _client = new WebSocket(req, new NSObject[] { new NSString(protocol) });
 
                 _client.ReceivedMessage += _client_ReceivedMessage;
+                _client.ReceivedPong += _client_ReceivedPong;
                 _client.WebSocketClosed += _client_WebSocketClosed;
                 _client.WebSocketFailed += _client_WebSocketFailed;
                 _client.WebSocketOpened += _client_WebSocketOpened;
@@ -124,6 +126,19 @@ namespace Websockets.Ios
             }
         }
 
+        public void SendPing(string message)
+        {
+            try
+            {
+                if (_client != null)
+                    _client.SendPing(NSData.FromString(message));
+            }
+            catch (Exception ex)
+            {
+                OnError(ex.Message);
+            }
+        }
+
         public void Dispose()
         {
             Close();
@@ -164,6 +179,12 @@ namespace Websockets.Ios
         {
             if (e != null && e.Message != null)
                 OnMessage(e.Message.ToString());
+        }
+        
+        private void _client_ReceivedPong(object sender, WebSocketReceivedPongEventArgs e)
+        {
+            if (e != null && e.PongPayload != null)
+                OnPong(e.PongPayload.ToString());
         }
     }
 }

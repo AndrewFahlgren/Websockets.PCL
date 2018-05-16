@@ -17,7 +17,9 @@ namespace Websockets
         void Close();
 
         void Send(string message);
-        
+
+        void SendPing(string message);
+
         event Action OnOpened;
 
         event Action OnClosed;
@@ -27,7 +29,9 @@ namespace Websockets
         event Action<string> OnError;
 
         event Action<string> OnMessage;
-        
+
+        event Action<string> OnPong;
+
         event Action<string> OnLog;
     }
 }

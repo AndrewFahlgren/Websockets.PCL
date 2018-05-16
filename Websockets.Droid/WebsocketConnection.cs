@@ -18,6 +18,7 @@ namespace Websockets.Droid
         public event Action<string> OnMessage = delegate { };
         public event Action<byte[]> OnData = delegate { };
         public event Action<string> OnLog = delegate { };
+        public event Action<string> OnPong = delegate { };
 
         private BridgeController _controller;
 
@@ -100,6 +101,19 @@ namespace Websockets.Droid
             }
         }
 
+        public void SendPing(string message)
+        {
+            try
+            {
+                _controller.SendPing(message);
+
+            }
+            catch (Exception ex)
+            {
+                OnError(ex.Message);
+            }
+        }
+
         //
 
         public override unsafe void RaiseClosed()
@@ -125,6 +139,12 @@ namespace Websockets.Droid
         {
             OnMessage(p1);
             base.RaiseMessage(p1);
+        }
+
+        public override unsafe void RaisePong(string p1)
+        {
+            OnPong(p1);
+            base.RaisePong(p1);
         }
 
         public override unsafe void RaiseOpened()

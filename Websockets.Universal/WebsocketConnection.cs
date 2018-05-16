@@ -19,6 +19,7 @@ namespace Websockets.Universal
         public event Action<string> OnError = delegate { };
         public event Action<string> OnMessage = delegate { };
         public event Action<string> OnLog = delegate { };
+        public event Action<string> OnPong = delegate { };
 
         /// <summary>
         /// Factory Initializer
@@ -109,6 +110,11 @@ namespace Websockets.Universal
                     OnError("Failed to send message.");
                 }
             }
+        }
+
+        public void SendPing(string message)
+        {
+            throw new NotImplementedException();
         }
 
 

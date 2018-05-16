@@ -95,6 +95,14 @@ public class BridgeController {
                         RaiseMessage(s);
                     }
                 });
+
+
+                webSocket.setPongCallback(new WebSocket.PongCallback() {
+                    @Override
+                    public void onPongReceived(String s) {
+                        RaisePong(s);
+                    }
+                });
             }
         });
     }
@@ -112,6 +120,7 @@ public class BridgeController {
         }
     }
 
+
     // send a message
     public void Send(final String message) {
         try
@@ -121,6 +130,18 @@ public class BridgeController {
             mConnection.send(message);
         }catch (Exception ex){
             RaiseError("Error Send - "+ex.getMessage());
+        }
+    }
+
+    // send a ping
+    public void SendPing(final String message) {
+        try
+        {
+            if(mConnection == null)
+                return;
+            mConnection.ping(message);
+        }catch (Exception ex){
+            RaiseError("Error SendPing - "+ex.getMessage());
         }
     }
 
@@ -160,6 +181,16 @@ public class BridgeController {
         try{
             if(proxy != null)
                 proxy.RaiseMessage(message);
+        }catch(Exception ex){
+            RaiseClosed();
+            Error("Failed to Raise");
+        }
+    }
+
+    private void RaisePong(String message) {
+        try{
+            if(proxy != null)
+                proxy.RaisePong(message);
         }catch(Exception ex){
             RaiseClosed();
             Error("Failed to Raise");
