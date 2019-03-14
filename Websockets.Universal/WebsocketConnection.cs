@@ -112,11 +112,21 @@ namespace Websockets.Universal
             }
         }
 
-        public void SendPing(string message)
+        public async void SendPing(string message)
         {
-            throw new NotImplementedException();
+            if (_websocket != null && messageWriter != null)
+            {
+                try
+                {
+                    messageWriter.WriteString("ping");
+                    await messageWriter.StoreAsync();
+                }
+                catch
+                {
+                    OnError("Failed to send ping.");
+                }
+            }
         }
-
 
         public void Dispose()
         {
@@ -143,6 +153,11 @@ namespace Websockets.Universal
                 {
                     reader.UnicodeEncoding = UnicodeEncoding.Utf8;
                     var text = reader.ReadString(reader.UnconsumedBufferLength);
+                    if (text == "pong")
+                    {
+                        OnPong(text);
+                        return;
+                    }
                     OnMessage(text);
                 }
             }
