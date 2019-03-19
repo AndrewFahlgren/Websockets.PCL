@@ -22,11 +22,16 @@ namespace Websockets.Droid
 
         private BridgeController _controller;
 
-        static WebsocketConnection()
+        WebsocketConnection()
         {
             System.Net.ServicePointManager.ServerCertificateValidationCallback += (o, certificate, chain, errors) => true;
         }
-        
+
+        WebsocketConnection(System.IntPtr intPtr, Android.Runtime.JniHandleOwnership owner)
+        {
+            System.Net.ServicePointManager.ServerCertificateValidationCallback += (o, certificate, chain, errors) => true;
+        }
+
         /// <summary>
         /// Factory Initializer
         /// </summary>
