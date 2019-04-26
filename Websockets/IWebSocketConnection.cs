@@ -10,6 +10,8 @@ namespace Websockets
     {
         bool IsOpen { get; }
 
+        void SetIsAllTrusted();
+
         void Open(string url, string protocol = null, string authToken = null);
 
         void Open(string url, string protocol, IDictionary<string, string> headers);
@@ -18,6 +20,8 @@ namespace Websockets
 
         void Send(string message);
 
+        void Send(byte[] data);
+        
         void SendPing(string message);
 
         event Action OnOpened;
@@ -26,9 +30,11 @@ namespace Websockets
 
         event Action<IWebSocketConnection> OnDispose;
 
-        event Action<string> OnError;
+        event Action<Exception> OnError;
 
         event Action<string> OnMessage;
+
+        event Action<byte[]> OnData;
 
         event Action<string> OnPong;
 

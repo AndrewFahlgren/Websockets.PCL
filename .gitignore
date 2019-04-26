@@ -210,3 +210,9 @@ keepBackup = false
 tool = codecompare
 guitool = codecompare
 .nuget/
+/.vs/Websockets/v16/Server/sqlite3/db.lock
+/.vs/Websockets/v16/Server/sqlite3/storage.ide
+/.vs/Websockets/v16/Server/sqlite3/storage.ide-shm
+/.vs/Websockets/v16/Server/sqlite3/storage.ide-wal
+/Websockets.DroidBridge/.idea/codeStyles/Project.xml
+/Websockets.DroidBridge/.idea/vcs.xml
