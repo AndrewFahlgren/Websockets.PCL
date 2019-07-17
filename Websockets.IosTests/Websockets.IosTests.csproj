@@ -109,6 +109,8 @@
     <ProjectReference Include="..\Websockets.Ios\Websockets.Ios.csproj">
       <Project>{DD8C01F3-188F-40E5-B8B1-62DB48C1847F}</Project>
       <Name>Websockets.Ios</Name>
+      <IsAppExtension>false</IsAppExtension>
+      <IsWatchApp>false</IsWatchApp>
     </ProjectReference>
     <ProjectReference Include="..\Websockets\Websockets.csproj">
       <Project>{1A23D79E-7A64-450C-960C-4848B0149E3D}</Project>

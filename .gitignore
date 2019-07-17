@@ -210,3 +210,5 @@ keepBackup = false
 tool = codecompare
 guitool = codecompare
 .nuget/
+/.vs/Websockets/v15/Server/sqlite3
+/.vs/Websockets/v16/Server/sqlite3
