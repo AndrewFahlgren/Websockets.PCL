@@ -1,5 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Net;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 using Websockets.DroidBridge;
 
 namespace Websockets.Droid
@@ -14,13 +18,14 @@ namespace Websockets.Droid
         public event Action OnClosed = delegate { };
         public event Action OnOpened = delegate { };
         public event Action<IWebSocketConnection> OnDispose = delegate { };
-        public event Action<string> OnError = delegate { };
+        public event Action<Exception> OnError = delegate { };
         public event Action<string> OnMessage = delegate { };
         public event Action<byte[]> OnData = delegate { };
         public event Action<string> OnLog = delegate { };
         public event Action<string> OnPong = delegate { };
 
         private BridgeController _controller;
+        private static bool _isAllTrusted = false;
 
         WebsocketConnection()
         {
@@ -45,11 +50,11 @@ namespace Websockets.Droid
             try
             {
                 IsOpen = false;
-                _controller.Close();
+                _controller?.Close();
             }
             catch (Exception ex)
             {
-                OnError(ex.Message);
+                OnError(ex);
             }
         }
 
@@ -68,13 +73,19 @@ namespace Websockets.Droid
         {
             try
             {
-                _controller = new BridgeController();
-                _controller.Proxy = this;
+                _controller = new BridgeController
+                {
+                    Proxy = this
+                };
+                if (_isAllTrusted)
+                {
+                    _controller.SetIsAllTrusted();
+                }
                 _controller.Open(url, protocol, headers);
             }
             catch (Exception ex)
             {
-                OnError(ex.Message);
+                OnError(ex);
             }
         }
 
@@ -88,7 +99,7 @@ namespace Websockets.Droid
             }
             catch (Exception ex)
             {
-                OnError(ex.Message);
+                OnError(ex);
             }
         }
 
@@ -102,7 +113,20 @@ namespace Websockets.Droid
             }
             catch (Exception ex)
             {
-                OnError(ex.Message);
+                OnError(ex);
+            }
+        }
+
+        public void Send(byte[] data)
+        {
+            try
+            {
+                _controller.Send(data);
+
+            }
+            catch (Exception ex)
+            {
+                OnError(ex);
             }
         }
 
@@ -115,7 +139,14 @@ namespace Websockets.Droid
             }
             catch (Exception ex)
             {
-                OnError(ex.Message);
+                OnError(ex);
+            }
+        }
+
+        public void SetIsAllTrusted()
+        {
+            if (!_isAllTrusted) {
+                _isAllTrusted = true;
             }
         }
 
@@ -129,6 +160,12 @@ namespace Websockets.Droid
         }
 
         public override unsafe void RaiseError(string p1)
+        {
+            OnError(new Exception(p1));
+            base.RaiseError(p1);
+        }
+
+        public override unsafe void RaiseError(Java.Lang.Exception p1)
         {
             OnError(p1);
             base.RaiseError(p1);
@@ -145,11 +182,17 @@ namespace Websockets.Droid
             OnMessage(p1);
             base.RaiseMessage(p1);
         }
-
+        
         public override unsafe void RaisePong(string p1)
         {
             OnPong(p1);
             base.RaisePong(p1);
+        }
+        
+        public override unsafe void RaiseData(byte[] p1)
+        {
+            OnData(p1);
+            base.RaiseData(p1);
         }
 
         public override unsafe void RaiseOpened()
