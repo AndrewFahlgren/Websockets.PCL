@@ -16,10 +16,11 @@ namespace Websockets.Universal
         public event Action OnClosed = delegate { };
         public event Action OnOpened = delegate { };
         public event Action<IWebSocketConnection> OnDispose = delegate { };
-        public event Action<string> OnError = delegate { };
+        public event Action<Exception> OnError = delegate { };
         public event Action<string> OnMessage = delegate { };
         public event Action<string> OnLog = delegate { };
         public event Action<string> OnPong = delegate { };
+        public event Action<byte[]> OnData;
 
         /// <summary>
         /// Factory Initializer
@@ -78,7 +79,7 @@ namespace Websockets.Universal
                     }
                     else if (status == AsyncStatus.Error)
                     {
-                        OnError("Websocket error");
+                        OnError(new Exception("Websocket error"));
                     }
                 };
 
@@ -86,7 +87,7 @@ namespace Websockets.Universal
             }
             catch (Exception ex)
             {
-                OnError(ex.Message);
+                OnError(ex);
             }
         }
 
@@ -107,7 +108,23 @@ namespace Websockets.Universal
                 }
                 catch
                 {
-                    OnError("Failed to send message.");
+                    OnError(new Exception("Failed to send message."));
+                }
+            }
+        }
+
+        public async void Send(byte[] data)
+        {
+            if (_websocket != null && messageWriter != null)
+            {
+                try
+                {
+                    messageWriter.WriteBytes(data);
+                    await messageWriter.StoreAsync();
+                }
+                catch
+                {
+                    OnError(new Exception("Failed to send message."));
                 }
             }
         }
@@ -123,7 +140,7 @@ namespace Websockets.Universal
                 }
                 catch
                 {
-                    OnError("Failed to send ping.");
+                    OnError(new Exception("Failed to send ping."));
                 }
             }
         }
@@ -163,7 +180,7 @@ namespace Websockets.Universal
             }
             catch
             {
-                OnError("Failed to read message.");
+                OnError(new Exception("Failed to read message."));
             }
         }
 
@@ -171,6 +188,10 @@ namespace Websockets.Universal
         {
             IsOpen = false;
             OnClosed();
+        }
+
+        public void SetIsAllTrusted()
+        {
         }
     }
 }

@@ -13,10 +13,11 @@ namespace Websockets.Ios
         public event Action OnClosed = delegate { };
         public event Action OnOpened = delegate { };
         public event Action<IWebSocketConnection> OnDispose = delegate { };
-        public event Action<string> OnError = delegate { };
+        public event Action<Exception> OnError = delegate { };
         public event Action<string> OnMessage = delegate { };
         public event Action<string> OnPong = delegate { };
         public event Action<string> OnLog = delegate { };
+        public event Action<byte[]> OnData;
 
         static WebsocketConnection()
         {
@@ -77,7 +78,7 @@ namespace Websockets.Ios
             }
             catch (Exception ex)
             {
-                OnError(ex.Message);
+                OnError(ex);
             }
         }
 
@@ -109,7 +110,7 @@ namespace Websockets.Ios
             }
             catch (Exception ex)
             {
-                OnError(ex.Message);
+                OnError(ex);
             }
         }
 
@@ -122,8 +123,13 @@ namespace Websockets.Ios
             }
             catch (Exception ex)
             {
-                OnError(ex.Message);
+                OnError(ex);
             }
+        }
+
+        public void Send(byte[] data)
+        {
+            Send(data.ToString());
         }
 
         public void SendPing(string message)
@@ -135,7 +141,7 @@ namespace Websockets.Ios
             }
             catch (Exception ex)
             {
-                OnError(ex.Message);
+                OnError(ex);
             }
         }
 
@@ -159,9 +165,9 @@ namespace Websockets.Ios
         {
 
             if (e.Error != null)
-                OnError(e.Error.Description);
+                OnError(new Exception(e.Error.Description));
             else
-                OnError("Unknown WebSocket Error!");
+                OnError(new Exception("Unknown WebSocket Error!"));
 
             if (IsOpen)
             {
@@ -185,6 +191,10 @@ namespace Websockets.Ios
         {
             if (e != null && e.PongPayload != null)
                 OnPong(e.PongPayload.ToString());
+        }
+
+        public void SetIsAllTrusted()
+        {
         }
     }
 }
