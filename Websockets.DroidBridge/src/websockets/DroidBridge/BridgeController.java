@@ -254,7 +254,6 @@ public class BridgeController {
             if(proxy != null)
                 proxy.RaiseClosed();
         }catch(Exception ex){
-            // RaiseClosed();
             Error("Failed to Close");
         }
     }
@@ -303,20 +302,13 @@ public class BridgeController {
         try{
             if(proxy != null)
                 proxy.RaiseError(message);
-        }catch(Exception ex){
-            RaiseClosed();
-            Error("Failed to Error");
-        }
+        }catch(){ }
     }
 
     private void RaiseError(Exception ex) {
         try{
             if(proxy != null)
                 proxy.RaiseError(ex);
-        }catch(Exception iex){
-            RaiseClosed();
-            Error(iex);
-            Error("Failed to Error");
-        }
+        }catch(){ }
     }
 }
