@@ -8,7 +8,7 @@ namespace Websockets.Ios
     [Preserve]
     public class WebsocketConnection : IWebSocketConnection
     {
-        public bool IsOpen { get; private set; }
+        public bool IsOpen => _client != null && _client.ReadyState == ReadyState.Open;
 
         public event Action OnClosed = delegate { };
         public event Action OnOpened = delegate { };
@@ -73,7 +73,12 @@ namespace Websockets.Ios
                 _client.WebSocketClosed += _client_WebSocketClosed;
                 _client.WebSocketFailed += _client_WebSocketFailed;
                 _client.WebSocketOpened += _client_WebSocketOpened;
-
+                if (_client.ReadyState != ReadyState.Connecting)
+                {
+                    Close();
+                    OnError(new Exception("Cannot open web socket due to bad state: " + _client.ReadyState));
+                    return;
+                }
                 _client.Open();
             }
             catch (Exception ex)
@@ -118,8 +123,10 @@ namespace Websockets.Ios
         {
             try
             {
-                if (_client != null)
+                if (_client != null && IsOpen)
                     _client.Send(new NSString(message));
+                else
+                    OnError(new Exception("Websocket not open when attempting to send message"));
             }
             catch (Exception ex)
             {
@@ -136,8 +143,10 @@ namespace Websockets.Ios
         {
             try
             {
-                if (_client != null)
+                if (_client != null && IsOpen)
                     _client.SendPing(NSData.FromString(message));
+                else
+                    OnError(new Exception("Websocket not open when attempting to send ping"));
             }
             catch (Exception ex)
             {
@@ -157,7 +166,6 @@ namespace Websockets.Ios
 
         private void _client_WebSocketOpened(object sender, EventArgs e)
         {
-            IsOpen = true;
             OnOpened();
         }
 
@@ -177,7 +185,6 @@ namespace Websockets.Ios
 
         private void _client_WebSocketClosed(object sender, WebSocketClosedEventArgs e)
         {
-            IsOpen = false;
             OnClosed();
         }
 
