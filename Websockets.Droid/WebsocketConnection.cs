@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
-using Websockets.DroidBridge;
+using Websockets.Droidbridge;
 
 namespace Websockets.Droid
 {
@@ -156,50 +156,50 @@ namespace Websockets.Droid
         {
             IsOpen = false;
             OnClosed();
-            base.RaiseClosed();
+            //base.RaiseClosed();
         }
 
         public override unsafe void RaiseError(string p1)
         {
             OnError(new Exception(p1));
-            base.RaiseError(p1);
+            //base.RaiseError(p1);
         }
 
         public override unsafe void RaiseError(Java.Lang.Exception p1)
         {
             OnError(p1);
-            base.RaiseError(p1);
+            //base.RaiseError(p1);
         }
 
         public override unsafe void RaiseLog(string p1)
         {
             OnLog(p1);
-            base.RaiseLog(p1);
+            //base.RaiseLog(p1);
         }
 
         public override unsafe void RaiseMessage(string p1)
         {
             OnMessage(p1);
-            base.RaiseMessage(p1);
+            //base.RaiseMessage(p1);
         }
         
         public override unsafe void RaisePong(string p1)
         {
             OnPong(p1);
-            base.RaisePong(p1);
+           // base.RaisePong(p1);
         }
         
         public override unsafe void RaiseData(byte[] p1)
         {
             OnData(p1);
-            base.RaiseData(p1);
+            //base.RaiseData(p1);
         }
 
         public override unsafe void RaiseOpened()
         {
             IsOpen = true;
             OnOpened();
-            base.RaiseOpened();
+            //base.RaiseOpened();
         }
     }
 }

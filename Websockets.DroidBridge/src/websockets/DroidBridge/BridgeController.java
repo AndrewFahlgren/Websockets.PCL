@@ -302,13 +302,13 @@ public class BridgeController {
         try{
             if(proxy != null)
                 proxy.RaiseError(message);
-        }catch(){ }
+        }catch(Exception ex){ }
     }
 
     private void RaiseError(Exception ex) {
         try{
             if(proxy != null)
                 proxy.RaiseError(ex);
-        }catch(){ }
+        }catch(Exception e){ }
     }
 }

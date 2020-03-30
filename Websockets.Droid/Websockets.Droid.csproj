@@ -12,7 +12,9 @@
     <RootNamespace>Websockets.Droid</RootNamespace>
     <AssemblyName>Websockets.Droid</AssemblyName>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkVersion>v8.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v10.0</TargetFrameworkVersion>
+    <AndroidClassParser>class-parse</AndroidClassParser>
+    <AndroidCodegenTarget>XamarinAndroid</AndroidCodegenTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -25,7 +27,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
+    <Optimize>false</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -37,6 +39,9 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime">
       <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="WebSockets.PCL">
+      <HintPath>..\..\..\..\..\..\Dev\Xamarin\Tools\WebSockets.PCL.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -53,10 +58,10 @@
     <TransformFile Include="Transforms\EnumMethods.xml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedJar Include="Jars\Websockets.DroidBridge.jar" />
+    <EmbeddedReferenceJar Include="Jars\androidasync-3.0.8.jar" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedReferenceJar Include="Jars\androidasync-2.1.6.jar" />
+    <EmbeddedJar Include="Jars\Websockets.DroidBridge.jar" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.Bindings.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
